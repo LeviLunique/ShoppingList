@@ -1,16 +1,16 @@
+//
+//  Product.swift
+//  AddProducts
+//
+//  Created by Levi Lunique on 14/05/23.
+//
+
 import Foundation
 
-struct Product: Identifiable {
-    let id = UUID()
+struct Product: Identifiable, Hashable {
+    var id: UUID
     var name: String
     var value: Float
-    var quantity: Int
-    var totalValue: Float?
-    
-    init(name: String, value: Float, quantity: Int = 1, totalValue: Float? = nil) {
-        self.name = name
-        self.value = value
-        self.quantity = quantity
-        self.totalValue = totalValue
-    }
+    var quantity: Int32
+    var totalValue: Float
 }

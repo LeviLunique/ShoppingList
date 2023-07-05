@@ -1,29 +1,59 @@
 import Foundation
+import CoreData
 
 class CartViewModel: ObservableObject {
-    @Published var cart: Cart
+    @Published private(set) var cartProducts: [CoreDataProduct] = []
     
-    init(cart: Cart = Cart()) {
-        self.cart = cart
+    private let cart: CoreDataCart
+    private let context: NSManagedObjectContext
+    
+    init(context: NSManagedObjectContext) {
+        self.context = context
+        if let fetchedCart = try? context.fetch(CoreDataCart.fetchRequest()).first as? CoreDataCart {
+            self.cart = fetchedCart
+        } else {
+            self.cart = CoreDataCart(context: context)
+            self.cart.cartId = UUID()
+            try? context.save()
+        }
+        self.cartProducts = cart.products?.allObjects as? [CoreDataProduct] ?? []
     }
     
-    func increaseQuantity(for product: Product) {
-        if let index = cart.products.firstIndex(where: { $0.id == product.id }) {
-            cart.products[index].quantity += 1
+    func removeProductFromCart(_ product: CoreDataProduct) {
+        if let index = cartProducts.firstIndex(where: { $0.productId == product.productId }) {
+            cartProducts.remove(at: index)
+            cart.removeFromProducts(product)
+            saveContext()
         }
     }
     
-    func decreaseQuantity(for product: Product) {
-        if let index = cart.products.firstIndex(where: { $0.id == product.id }) {
-            if cart.products[index].quantity > 1 {
-                cart.products[index].quantity -= 1
-            } else {
-                cart.products.remove(at: index)
+    private func saveContext() {
+        do {
+            try context.save()
+        } catch {
+            print("Error saving managed object context: \(error)")
+        }
+    }
+    
+    func clearCart() {
+        if let cartProductsSet = cart.products as? Set<CoreDataProduct> {
+            for product in cartProductsSet {
+                cart.removeFromProducts(product)
             }
         }
+        cartProducts.removeAll()
+        saveContext()
     }
     
-    func removeProduct(at index: Int) {
-        cart.products.remove(at: index)
+    func updateQuantity(at index: Int, newQuantity: Int) {
+        if index < cartProducts.count {
+            cartProducts[index].quantity = Int32(newQuantity)
+            updateTotalValue(for: &cartProducts[index])
+            saveContext()
+        }
+    }
+    
+    private func updateTotalValue(for product: inout CoreDataProduct) {
+        product.totalValue = product.value * Float(product.quantity)
     }
 }

@@ -1,15 +1,17 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var productViewModel = ProductViewModel()
-    @StateObject private var cartViewModel = CartViewModel()
+    @Environment(\.managedObjectContext) private var managedObjectContext
+    @EnvironmentObject private var productViewModel: ProductViewModel
+    @StateObject private var cartViewModel: CartViewModel = CartViewModel(context: PersistenceController.shared.container.viewContext)
+    
     @State private var showingAddScreen = false
     @State private var showingCartScreen = false
+    @State private var productToEdit: Product?
     
     var body: some View {
         NavigationView {
             ProductListView()
-                .environmentObject(productViewModel)
                 .navigationBarItems(trailing: Button(action: {
                     showingCartScreen = true
                 }) {
@@ -29,21 +31,15 @@ struct ContentView: View {
                     .offset(x: -16, y: -16),
                     alignment: .bottomTrailing
                 )
-        }
-        .sheet(isPresented: $showingAddScreen) {
-            AddProductView(productViewModel: productViewModel)
-                .environmentObject(productViewModel)
-                .onAppear {
-                    print("ContentView - productViewModel: \(productViewModel)")
+                .sheet(isPresented: $showingAddScreen) {
+                    ProductFormView(title: productToEdit == nil ? "Adicionar Produto" : "Editar Produto",
+                                    product: $productToEdit)
+                        .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
+                }
+                .sheet(isPresented: $showingCartScreen) {
+                    CartView(cartViewModel: cartViewModel)
                 }
         }
-        .sheet(isPresented: $showingCartScreen) {
-            CartView()
-                .environmentObject(productViewModel)
-                .environmentObject(cartViewModel)
-                .onAppear {
-                    print("ContentView - productViewModel: \(productViewModel)")
-                }
-        }
+        .environmentObject(productViewModel)
     }
 }
