@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C2479E1D2A0D5B8200E29C32"
-               BuildableName = "AddProducts.app"
-               BlueprintName = "AddProducts"
-               ReferencedContainer = "container:AddProducts.xcodeproj">
+               BuildableName = "ShoppingList.app"
+               BlueprintName = "ShoppingList"
+               ReferencedContainer = "container:ShoppingList.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -35,9 +35,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C2479E2D2A0D5B8400E29C32"
-               BuildableName = "AddProductsTests.xctest"
-               BlueprintName = "AddProductsTests"
-               ReferencedContainer = "container:AddProducts.xcodeproj">
+               BuildableName = "ShoppingListTests.xctest"
+               BlueprintName = "ShoppingListTests"
+               ReferencedContainer = "container:ShoppingList.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -46,9 +46,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C2479E372A0D5B8400E29C32"
-               BuildableName = "AddProductsUITests.xctest"
-               BlueprintName = "AddProductsUITests"
-               ReferencedContainer = "container:AddProducts.xcodeproj">
+               BuildableName = "ShoppingListUITests.xctest"
+               BlueprintName = "ShoppingListUITests"
+               ReferencedContainer = "container:ShoppingList.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -68,9 +68,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C2479E1D2A0D5B8200E29C32"
-            BuildableName = "AddProducts.app"
-            BlueprintName = "AddProducts"
-            ReferencedContainer = "container:AddProducts.xcodeproj">
+            BuildableName = "ShoppingList.app"
+            BlueprintName = "ShoppingList"
+            ReferencedContainer = "container:ShoppingList.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
@@ -95,9 +95,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C2479E1D2A0D5B8200E29C32"
-            BuildableName = "AddProducts.app"
-            BlueprintName = "AddProducts"
-            ReferencedContainer = "container:AddProducts.xcodeproj">
+            BuildableName = "ShoppingList.app"
+            BlueprintName = "ShoppingList"
+            ReferencedContainer = "container:ShoppingList.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
