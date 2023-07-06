@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/levilunique/Workspace/Swift/AddProducts/ShoppingList.xcodeproj">
+      location = "self:">
    </FileRef>
 </Workspace>
