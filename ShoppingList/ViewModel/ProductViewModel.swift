@@ -176,6 +176,7 @@ class ProductViewModel: ObservableObject {
     }
 
     func updateProduct(_ product: Product, name: String, value: Float, quantity: Int32) {
+        os_log(.info, log: log, "Iniciando atualização do produto com ID: %{public}@", product.id.uuidString)
         let context = PersistenceController.shared.container.viewContext
         let fetchRequest: NSFetchRequest<CoreDataProduct> = CoreDataProduct.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(CoreDataProduct.productId), product.id as CVarArg)
@@ -183,14 +184,20 @@ class ProductViewModel: ObservableObject {
         do {
             let fetchedProducts = try context.fetch(fetchRequest)
             if let coreDataProduct = fetchedProducts.first {
+                // Verificar se existe outro produto com o mesmo nome, mas com ID diferente
+                let nameFetchRequest: NSFetchRequest<CoreDataProduct> = CoreDataProduct.fetchRequest()
+                nameFetchRequest.predicate = NSPredicate(format: "name == %@ AND productId != %@", name, coreDataProduct.productId as CVarArg)
+                let existingProducts = try context.fetch(nameFetchRequest)
 
-                if name != coreDataProduct.name {
-                    if let existingProduct = getProduct(withName: name), coreDataProduct.productId != existingProduct.productId {
-                        productExistsError = true
-                        return
+                if !existingProducts.isEmpty {
+                    os_log(.info, log: log, "Encontrado produto duplicado com nome: %{public}@", name)
+                    DispatchQueue.main.async {
+                        self.productExistsError = true
                     }
+                    return
                 }
 
+                os_log(.info, log: log, "Atualizando produto com ID: %{public}@", coreDataProduct.productId.uuidString)
                 coreDataProduct.name = name
                 coreDataProduct.value = value
                 coreDataProduct.quantity = quantity
@@ -198,9 +205,11 @@ class ProductViewModel: ObservableObject {
 
                 try context.save()
                 fetchProducts()
+            } else {
+                os_log(.info, log: log, "Produto com ID: %{public}@ não encontrado para atualização", product.id.uuidString)
             }
         } catch {
-            // Tratar o erro ao recuperar e atualizar o produto do CoreData
+            os_log(.error, log: log, "Erro ao atualizar o produto: %{public}@", error.localizedDescription)
         }
     }
 

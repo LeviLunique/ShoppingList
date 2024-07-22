@@ -1,4 +1,5 @@
 import SwiftUI
+import os
 
 enum ProductError: LocalizedError, Identifiable {
     case inputValidation
@@ -23,6 +24,7 @@ enum ProductError: LocalizedError, Identifiable {
     }
 }
 
+private let log: OSLog = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "ProductFormView")
 
 struct ProductFormView: View {
     var title: String
@@ -83,14 +85,16 @@ struct ProductFormView: View {
                 guard let value = productViewModel.convertToFloat(productViewModel.valueString), let quantity = Int32(productViewModel.quantityString) else {
                     return
                 }
-                if productViewModel.productExists(withName: productViewModel.name) {
-                    currentError = .productExists
-                    return
-                }
                 if let product = product {
+                    os_log(.info, log: log, "Salvando atualização do produto com ID: %{public}@", product.id.uuidString)
                     productViewModel.updateProduct(product, name: productViewModel.name, value: value, quantity: quantity)
                     presentationMode.wrappedValue.dismiss()
                 } else {
+                    if productViewModel.productExists(withName: productViewModel.name) {
+                        currentError = .productExists
+                        return
+                    }
+                    os_log(.info, log: log, "Adicionando novo produto com nome: %{public}@", productViewModel.name)
                     productViewModel.addProduct {
                         product = nil
                         presentationMode.wrappedValue.dismiss()
